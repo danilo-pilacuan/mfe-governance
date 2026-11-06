@@ -3,6 +3,11 @@
 export default withNativeFederation({
   name: 'mfe-governance',
 
+  exposes: {
+    './Module': './src/app/app.routes.ts',
+    './Widget': './src/app/widgets/gate-status.widget.ts',
+  },
+
   shared: fromPackageJson({
     singleton: true,
     strictVersion: true,

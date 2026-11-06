@@ -1,12 +1,7 @@
-﻿import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
+﻿import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import {
-  ProjectStore,
-  SincronizadorEscrituras,
-  UsuarioStore,
-  sincronizarStores,
-} from '@projecthub/shared';
+import { ProjectStore, UsuarioStore, proporcionarSincronizacionBackend } from '@projecthub/shared';
 import { remoteRoutes as routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -16,9 +11,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     ProjectStore,
     UsuarioStore,
-    provideAppInitializer(async () => {
-      await sincronizarStores();
-      inject(SincronizadorEscrituras).preparar();
-    }),
+    proporcionarSincronizacionBackend(),
   ]
 };
