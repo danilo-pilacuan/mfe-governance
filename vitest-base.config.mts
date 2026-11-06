@@ -21,7 +21,7 @@ export default defineConfig({
   test: {
     server: {
       deps: {
-        inline: ['@projecthub/ui', '@projecthub/shared', 'primeng', '@primeuix/themes'],
+        inline: ['@projecthub/ui', '@projecthub/shared'],
       },
     },
   },
