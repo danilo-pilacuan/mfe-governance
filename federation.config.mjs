@@ -1,4 +1,4 @@
-﻿import {
+import {
   withNativeFederation,
   fromPackageJson,
 } from '@angular-architects/native-federation/config';
@@ -21,6 +21,8 @@ export default withNativeFederation({
   })
     .patch(['@angular/*'], { includeSecondaries: { keepAll: true } })
     .override({
+    primeng: { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+    '@primeuix/themes': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
     '@projecthub/shared': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
     '@projecthub/ui': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
   })
