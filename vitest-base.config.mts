@@ -15,6 +15,8 @@ export default defineConfig({
       '@angular/platform-browser',
       '@angular/router',
       '@angular/forms',
+      '@angular/material',
+      '@angular/cdk',
       'rxjs',
     ],
   },
