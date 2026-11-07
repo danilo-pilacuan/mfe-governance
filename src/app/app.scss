@@ -1,0 +1,26 @@
+.governance-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  a {
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--ph-borde, #d5dae2);
+    border-radius: 999px;
+    background: var(--ph-superficie, #fff);
+    color: var(--ph-texto, #1c2430);
+    font-size: 0.875rem;
+    text-decoration: none;
+
+    &:hover {
+      border-color: var(--ph-primario, #1f5eff);
+      color: var(--ph-primario, #1f5eff);
+    }
+
+    &.activo {
+      background: var(--ph-primario, #1f5eff);
+      border-color: var(--ph-primario, #1f5eff);
+      color: #fff;
+    }
+  }
+}
