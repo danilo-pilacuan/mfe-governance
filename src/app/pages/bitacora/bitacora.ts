@@ -3,12 +3,15 @@ import { MatButton } from '@angular/material/button';
 import {
   BitacoraEntrada,
   ETIQUETA_ETAPA,
+  ETIQUETA_TIPO_BITACORA,
   ProjectStore,
   descargarArchivo,
   nombreConFecha,
   serializarCsv,
   SESION_STORE,
   SesionStore,
+  TIPOS_BITACORA,
+  TipoBitacora,
   UsuarioStore,
 } from '@projecthub/shared';
 import { DataTable, DataTableColumn, IntlFormat, PermissionBanner } from '@projecthub/ui';
@@ -16,16 +19,6 @@ import { NavGovernance } from '../../shared/nav-governance';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-
-type TipoBitacora = BitacoraEntrada['tipo'];
-
-const TIPOS: readonly TipoBitacora[] = ['transicion', 'aprobacion', 'cambio'];
-
-const ETIQUETA_TIPO: Readonly<Record<TipoBitacora, string>> = {
-  transicion: 'Transicion',
-  aprobacion: 'Aprobacion',
-  cambio: 'Cambio',
-};
 
 interface FilaBitacora {
   [clave: string]: unknown;
@@ -66,8 +59,8 @@ export class Bitacora {
   private readonly sesion: SesionStore = inject(SESION_STORE);
   private readonly intl = inject(IntlFormat);
 
-  readonly tipos = TIPOS;
-  readonly etiquetaTipo = ETIQUETA_TIPO;
+  readonly tipos = TIPOS_BITACORA;
+  readonly etiquetaTipo = ETIQUETA_TIPO_BITACORA;
 
   readonly proyectos = this.store.proyectos;
   readonly proyectoSel = signal<string>('');
@@ -92,7 +85,7 @@ export class Bitacora {
         id: b.id,
         fecha: this.intl.fecha(b.fecha),
         proyecto: this.store.proyectoPorId(b.proyectoId)?.nombre ?? b.proyectoId,
-        tipo: ETIQUETA_TIPO[b.tipo],
+        tipo: this.etiquetaTipo[b.tipo],
         tipoValor: b.tipo,
         evento: this.eventoDe(b),
         autor: nombreDe(b.autorId),
