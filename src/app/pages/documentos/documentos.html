@@ -1,0 +1,171 @@
+<section class="pagina">
+  <header class="cabecera">
+    <h1>Documentos y entregables</h1>
+    <p class="subtitulo">
+      Gestion documental del ciclo de vida: entregables obligatorios por etapa, aprobacion
+      segun la matriz de responsabilidades y estado del gate para avanzar de etapa.
+    </p>
+  </header>
+
+  <div class="filtros">
+    <label class="campo-proyecto">
+      <span class="etiqueta">Proyecto</span>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filtro-select">
+        <mat-select
+          [value]="proyectoSel()"
+          (selectionChange)="seleccionarProyecto($any($event).value)"
+        >
+          @for (proyecto of proyectos(); track proyecto.id) {
+            <mat-option [value]="proyecto.id">
+              {{ proyecto.nombre }} ({{ etiquetaEstado[proyecto.estado] }})
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </label>
+  </div>
+
+  @if (error()) {
+    <ph-permission-banner variante="danger" [titulo]="error()" />
+  }
+
+  @if (!haySesion()) {
+    <ph-permission-banner
+      variante="info"
+      titulo="Sesion requerida"
+      detalle="Seleccione un usuario en el shell para ver y gestionar los entregables."
+    />
+  } @else if (proyectoActual(); as proyecto) {
+    @if (avisoEstado()) {
+      <ph-permission-banner variante="info" [titulo]="avisoEstado()" />
+    }
+
+    @if (gate(); as g) {
+      <mat-card class="tarjeta-gate" appearance="outlined">
+        <mat-card-content>
+          <div class="gate-cabecera">
+            <h2>Gate de etapa</h2>
+            @if (g.abierto) {
+              <span class="pill pill-ok">Abierto</span>
+            } @else {
+              <span class="pill pill-danger">Cerrado</span>
+            }
+          </div>
+          <p class="gate-etapa">
+            Etapa del ciclo de vida: <strong>{{ etiquetaEtapa[proyecto.etapa] }}</strong>
+          </p>
+          <div class="gate-resumen">
+            <span class="chip chip-ok">Aprobados: {{ g.aprobados.length }}</span>
+            <span class="chip chip-warn">Pendientes de aprobacion: {{ g.pendientesAprobacion.length }}</span>
+            <span class="chip chip-danger">Faltan por cargar: {{ g.faltantes.length }}</span>
+          </div>
+          <p class="gate-ayuda">
+            El gate cierra cuando todos los entregables obligatorios de la etapa estan cargados
+            y aprobados por un rol autorizado (Admin o Sponsor).
+          </p>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    <div class="tabla-cabecera">
+      <h2>Entregables del proyecto</h2>
+      @if (estadoEditable()) {
+        <button
+          mat-flat-button
+          class="boton primario"
+          type="button"
+          (click)="abrirFormulario()"
+        >
+          Cargar entregable
+        </button>
+      }
+    </div>
+
+    <ph-data-table
+      [filas]="filas()"
+      [cargando]="false"
+      textoVacio="Sin entregables registrados para este proyecto. Cargue el primer documento de la etapa."
+    >
+      <ph-data-table-column name="nombre" header="Documento">
+        <ng-template #cell let-fila>
+          <span class="celda-nombre">{{ fila['nombre'] }}</span>
+        </ng-template>
+      </ph-data-table-column>
+      <ph-data-table-column name="etapa" header="Etapa">
+        <ng-template #cell let-fila>
+          <ph-stage-badge kind="etapa" [valor]="fila['etapaValor']" />
+        </ng-template>
+      </ph-data-table-column>
+      <ph-data-table-column name="version" header="Version" />
+      <ph-data-table-column name="estado" header="Estado">
+        <ng-template #cell let-fila>
+          <span
+            class="pill"
+            [class.pill-ok]="fila['estado'] === 'Aprobado'"
+            [class.pill-warn]="fila['estado'] === 'Pendiente'"
+          >
+            {{ fila['estado'] }}
+          </span>
+        </ng-template>
+      </ph-data-table-column>
+      <ph-data-table-column name="autor" header="Autor" />
+      <ph-data-table-column name="aprobador" header="Aprobado por" />
+      <ph-data-table-column name="aprobadoEn" header="Fecha de aprobacion" />
+      <ph-data-table-column name="acciones" header="Acciones">
+        <ng-template #cell let-fila>
+          @if (fila['puedeAprobar']) {
+            <button
+              mat-button
+              class="boton"
+              type="button"
+              (click)="aprobar(fila)"
+            >
+              Aprobar
+            </button>
+          } @else {
+            <span class="sin-accion">-</span>
+          }
+        </ng-template>
+      </ph-data-table-column>
+    </ph-data-table>
+
+    @if (formVisible()) {
+      <form class="formulario" (submit)="$event.preventDefault(); guardar()">
+        <h3>Cargar entregable</h3>
+        <ph-permission-banner
+          variante="info"
+          titulo="Todo entregable se registra con version 1 y queda pendiente de aprobacion."
+        />
+        <div class="campos">
+          <ph-form-field label="Etapa del ciclo de vida" [requerido]="true">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-select
+                [value]="formEtapa()"
+                (selectionChange)="formEtapa.set($any($event).value)"
+              >
+                @for (etapa of etapas; track etapa) {
+                  <mat-option [value]="etapa">{{ etiquetaEtapa[etapa] }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </ph-form-field>
+          <ph-form-field label="Nombre del documento" [requerido]="true">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <input
+                matInput
+                type="text"
+                [value]="formNombre()"
+                (input)="formNombre.set($any($event).target.value)"
+                placeholder="Ej: Acta de requisitos"
+              />
+            </mat-form-field>
+          </ph-form-field>
+        </div>
+        <div class="acciones-form">
+          <button mat-flat-button class="boton primario" type="submit">Guardar</button>
+          <button mat-button class="boton" type="button" (click)="cancelar()">Cancelar</button>
+        </div>
+      </form>
+    }
+  }
+</section>
