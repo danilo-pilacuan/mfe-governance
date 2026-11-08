@@ -18,9 +18,9 @@ import {
   FormField,
   IntlFormat,
   PermissionBanner,
+  SectionNav,
   StageBadge,
 } from '@projecthub/ui';
-import { NavGovernance } from '../../shared/nav-governance';
 import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -57,7 +57,7 @@ interface FilaEntregable {
     FormField,
     PermissionBanner,
     StageBadge,
-    NavGovernance,
+    SectionNav,
     MatButton,
     MatCardModule,
     MatFormFieldModule,
@@ -68,6 +68,11 @@ interface FilaEntregable {
   styleUrl: './documentos.scss',
 })
 export class Documentos {
+  /** Navegacion de secciones de gobernanza. */
+  protected readonly navLinks = [
+    { ruta: '/governance', etiqueta: 'Documentos' },
+    { ruta: '/governance/bitacora', etiqueta: 'Bitacora' },
+  ];
   private readonly store = inject(ProjectStore);
   private readonly usuariosStore = inject(UsuarioStore);
   private readonly sesion: SesionStore = inject(SESION_STORE);

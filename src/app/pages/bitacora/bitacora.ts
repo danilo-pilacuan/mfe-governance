@@ -14,8 +14,7 @@ import {
   TipoBitacora,
   UsuarioStore,
 } from '@projecthub/shared';
-import { DataTable, DataTableColumn, IntlFormat, PermissionBanner } from '@projecthub/ui';
-import { NavGovernance } from '../../shared/nav-governance';
+import { DataTable, DataTableColumn, IntlFormat, PermissionBanner, SectionNav } from '@projecthub/ui';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -44,7 +43,7 @@ interface FilaBitacora {
     DataTable,
     DataTableColumn,
     PermissionBanner,
-    NavGovernance,
+    SectionNav,
     MatButton,
     MatFormFieldModule,
     MatInputModule,
@@ -58,6 +57,12 @@ export class Bitacora {
   private readonly usuariosStore = inject(UsuarioStore);
   private readonly sesion: SesionStore = inject(SESION_STORE);
   private readonly intl = inject(IntlFormat);
+
+  /** Navegacion de secciones de gobernanza. */
+  protected readonly navLinks = [
+    { ruta: '/governance', etiqueta: 'Documentos' },
+    { ruta: '/governance/bitacora', etiqueta: 'Bitacora' },
+  ];
 
   readonly tipos = TIPOS_BITACORA;
   readonly etiquetaTipo = ETIQUETA_TIPO_BITACORA;
