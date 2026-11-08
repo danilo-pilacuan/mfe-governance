@@ -56,9 +56,12 @@
             Etapa del ciclo de vida: <strong>{{ etiquetaEtapa[proyecto.etapa] }}</strong>
           </p>
           <div class="gate-resumen">
-            <span class="chip chip-ok">Aprobados: {{ g.aprobados.length }}</span>
-            <span class="chip chip-warn">Pendientes de aprobacion: {{ g.pendientesAprobacion.length }}</span>
-            <span class="chip chip-danger">Faltan por cargar: {{ g.faltantes.length }}</span>
+            <ph-pill tono="ok" [contenido]="'Aprobados: ' + g.aprobados.length" />
+            <ph-pill
+              tono="warn"
+              [contenido]="'Pendientes de aprobacion: ' + g.pendientesAprobacion.length"
+            />
+            <ph-pill tono="danger" [contenido]="'Faltan por cargar: ' + g.faltantes.length" />
           </div>
           <p class="gate-ayuda">
             El gate cierra cuando todos los entregables obligatorios de la etapa estan cargados

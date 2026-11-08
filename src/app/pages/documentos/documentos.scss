@@ -67,28 +67,6 @@
     margin: 0.5rem 0;
   }
 
-  .chip {
-    padding: 0.15rem 0.6rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-
-    &.chip-ok {
-      background: var(--ph-exito-fondo, #e7f5ec);
-      color: var(--ph-exito, #1b7f3b);
-    }
-
-    &.chip-warn {
-      background: var(--ph-alerta-fondo, #fdf3e3);
-      color: var(--ph-alerta, #9a6b0f);
-    }
-
-    &.chip-danger {
-      background: var(--ph-peligro-fondo, #fdecec);
-      color: var(--ph-peligro, #b3261e);
-    }
-  }
-
   .gate-ayuda {
     margin: 0.25rem 0 0;
     color: var(--ph-texto-suave, #5b6472);
