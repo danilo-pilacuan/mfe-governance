@@ -1,8 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { MatButton } from '@angular/material/button';
 import {
   BitacoraEntrada,
   ETIQUETA_ETAPA,
   ProjectStore,
+  descargarArchivo,
+  nombreConFecha,
+  serializarCsv,
   SESION_STORE,
   SesionStore,
   UsuarioStore,
@@ -46,6 +50,7 @@ interface FilaBitacora {
     DataTable,
     DataTableColumn,
     PermissionBanner,
+    MatButton,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -107,5 +112,22 @@ export class Bitacora {
 
   seleccionarTipo(tipo: string): void {
     this.tipoSel.set(tipo);
+  }
+
+  /** Exporta la bitacora filtrada a CSV (docs/funcionalidades.md 7.5). */
+  exportarCsv(): void {
+    const filas = this.filas().map((f) => ({
+      Fecha: f.fecha,
+      Proyecto: f.proyecto,
+      Tipo: f.tipo,
+      Evento: f.evento,
+      Autor: f.autor,
+      Comentario: f.comentario,
+    }));
+    descargarArchivo(
+      serializarCsv(filas, ['Fecha', 'Proyecto', 'Tipo', 'Evento', 'Autor', 'Comentario']),
+      nombreConFecha('bitacora'),
+      'text/csv;charset=utf-8',
+    );
   }
 }

@@ -35,6 +35,16 @@
         </mat-select>
       </mat-form-field>
     </label>
+
+    <button
+      type="button"
+      mat-button
+      class="boton-exportar"
+      (click)="exportarCsv()"
+      [disabled]="!haySesion() || filas().length === 0"
+    >
+      Exportar CSV
+    </button>
   </div>
 
   @if (!haySesion()) {

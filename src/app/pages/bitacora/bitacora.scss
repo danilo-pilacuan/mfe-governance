@@ -21,6 +21,7 @@
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
+  align-items: flex-end;
 
   .campo {
     display: flex;
@@ -38,6 +39,25 @@
     border-radius: var(--ph-radio, 8px);
     padding: 0.1rem 0.5rem;
     background: var(--ph-superficie, #fff);
+  }
+
+  .boton-exportar {
+    --mat-button-filled-container-color: var(--ph-primario, #1f5eff);
+    --mat-button-filled-label-text-color: #fff;
+
+    margin-bottom: 0.15rem;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--ph-borde, #d5dae2);
+    border-radius: var(--ph-radio, 8px);
+    background: var(--ph-superficie, #fff);
+    color: var(--ph-texto, #1c2430);
+    font: inherit;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      border-color: var(--ph-primario, #1f5eff);
+      color: var(--ph-primario, #1f5eff);
+    }
   }
 }
 

@@ -103,4 +103,56 @@ describe('Bitacora (mfe-governance)', () => {
     expect(autores).toContain('Diana Admin');
     expect(autores).toContain('Sergio Sponsor');
   });
+
+  it('exporta la bitacora como CSV descargable', async () => {
+    const fixture = configurar();
+
+    TestBed.inject<SesionStore>(SESION_STORE).seleccionar('u-admin');
+    await fixture.whenStable();
+
+    const urls: string[] = [];
+    const clickSpy = vi.fn();
+    const crearUrlSpy = vi
+      .spyOn(URL, 'createObjectURL')
+      .mockImplementation((blob: Blob | MediaSource) => {
+        expect(blob).toBeInstanceOf(Blob);
+        urls.push(`blob:mock-${urls.length}`);
+        return urls[urls.length - 1];
+      });
+    const revocarUrlSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(clickSpy);
+
+    try {
+      fixture.componentInstance.exportarCsv();
+
+      expect(crearUrlSpy).toHaveBeenCalledTimes(1);
+      expect(clickSpy).toHaveBeenCalledTimes(1);
+      expect(revocarUrlSpy).toHaveBeenCalledWith(urls[0]);
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
+  it('exporta un CSV sin filas cuando el filtro no arroja resultados', async () => {
+    const fixture = configurar();
+
+    TestBed.inject<SesionStore>(SESION_STORE).seleccionar('u-admin');
+    await fixture.whenStable();
+
+    fixture.componentInstance.seleccionarProyecto('p5');
+    await fixture.whenStable();
+
+    vi.spyOn(URL, 'createObjectURL').mockImplementation((blob: Blob | MediaSource) => {
+      expect(blob).toBeInstanceOf(Blob);
+      return 'blob:mock-vacio';
+    });
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+
+    try {
+      fixture.componentInstance.exportarCsv();
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
 });
