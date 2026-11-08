@@ -65,29 +65,6 @@
   font-weight: 600;
 }
 
-.pill {
-  padding: 0.05rem 0.5rem;
-  border-radius: 999px;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-
-  &.pill-transicion {
-    background: var(--ph-primario-fondo, #e8efff);
-    color: var(--ph-primario, #1f5eff);
-  }
-
-  &.pill-aprobacion {
-    background: var(--ph-exito-fondo, #e7f5ec);
-    color: var(--ph-exito, #1b7f3b);
-  }
-
-  &.pill-cambio {
-    background: var(--ph-alerta-fondo, #fdf3e3);
-    color: var(--ph-alerta, #9a6b0f);
-  }
-}
-
 .evento {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;

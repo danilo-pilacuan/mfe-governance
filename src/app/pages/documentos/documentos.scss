@@ -1,4 +1,4 @@
-.pagina {
+﻿.pagina {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -106,29 +106,6 @@
   h2 {
     margin: 0;
     font-size: 1.125rem;
-  }
-}
-
-.pill {
-  padding: 0.05rem 0.5rem;
-  border-radius: 999px;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-
-  &.pill-ok {
-    background: var(--ph-exito-fondo, #e7f5ec);
-    color: var(--ph-exito, #1b7f3b);
-  }
-
-  &.pill-warn {
-    background: var(--ph-alerta-fondo, #fdf3e3);
-    color: var(--ph-alerta, #9a6b0f);
-  }
-
-  &.pill-danger {
-    background: var(--ph-error-fondo, #fde8e8);
-    color: var(--ph-error, #b3261e);
   }
 }
 

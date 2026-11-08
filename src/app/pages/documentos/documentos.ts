@@ -18,6 +18,7 @@ import {
   FormField,
   IntlFormat,
   PermissionBanner,
+  Pill,
   SectionNav,
   StageBadge,
 } from '@projecthub/ui';
@@ -56,6 +57,7 @@ interface FilaEntregable {
     DataTableColumn,
     FormField,
     PermissionBanner,
+    Pill,
     StageBadge,
     SectionNav,
     MatButton,

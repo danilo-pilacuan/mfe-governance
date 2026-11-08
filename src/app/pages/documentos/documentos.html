@@ -47,9 +47,9 @@
           <div class="gate-cabecera">
             <h2>Gate de etapa</h2>
             @if (g.abierto) {
-              <span class="pill pill-ok">Abierto</span>
+              <ph-pill tono="ok" contenido="Abierto" />
             } @else {
-              <span class="pill pill-danger">Cerrado</span>
+              <ph-pill tono="danger" contenido="Cerrado" />
             }
           </div>
           <p class="gate-etapa">
@@ -100,13 +100,10 @@
       <ph-data-table-column name="version" header="Version" />
       <ph-data-table-column name="estado" header="Estado">
         <ng-template #cell let-fila>
-          <span
-            class="pill"
-            [class.pill-ok]="fila['estado'] === 'Aprobado'"
-            [class.pill-warn]="fila['estado'] === 'Pendiente'"
-          >
-            {{ fila['estado'] }}
-          </span>
+          <ph-pill
+            [tono]="fila['estado'] === 'Aprobado' ? 'ok' : 'warn'"
+            [contenido]="fila['estado']"
+          />
         </ng-template>
       </ph-data-table-column>
       <ph-data-table-column name="autor" header="Autor" />

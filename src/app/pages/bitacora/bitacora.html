@@ -74,14 +74,16 @@
       </ph-data-table-column>
       <ph-data-table-column name="tipo" header="Tipo">
         <ng-template #cell let-fila>
-          <span
-            class="pill"
-            [class.pill-transicion]="fila['tipoValor'] === 'transicion'"
-            [class.pill-aprobacion]="fila['tipoValor'] === 'aprobacion'"
-            [class.pill-cambio]="fila['tipoValor'] === 'cambio'"
-          >
-            {{ fila['tipo'] }}
-          </span>
+          <ph-pill
+            [tono]="
+              fila['tipoValor'] === 'transicion'
+                ? 'info'
+                : fila['tipoValor'] === 'aprobacion'
+                  ? 'ok'
+                  : 'warn'
+            "
+            [contenido]="fila['tipo']"
+          />
         </ng-template>
       </ph-data-table-column>
       <ph-data-table-column name="evento" header="Evento">

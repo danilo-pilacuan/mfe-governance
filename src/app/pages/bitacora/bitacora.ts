@@ -14,7 +14,14 @@ import {
   TipoBitacora,
   UsuarioStore,
 } from '@projecthub/shared';
-import { DataTable, DataTableColumn, IntlFormat, PermissionBanner, SectionNav } from '@projecthub/ui';
+import {
+  DataTable,
+  DataTableColumn,
+  IntlFormat,
+  PermissionBanner,
+  Pill,
+  SectionNav,
+} from '@projecthub/ui';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -43,6 +50,7 @@ interface FilaBitacora {
     DataTable,
     DataTableColumn,
     PermissionBanner,
+    Pill,
     SectionNav,
     MatButton,
     MatFormFieldModule,
