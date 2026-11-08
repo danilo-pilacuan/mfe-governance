@@ -18,5 +18,6 @@ describe('App', () => {
       a.textContent?.trim(),
     );
     expect(links).toContain('Documentos');
+    expect(links).toContain('Bitacora');
   });
 });

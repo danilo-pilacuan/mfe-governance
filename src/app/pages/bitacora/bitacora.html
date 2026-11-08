@@ -1,0 +1,97 @@
+<section class="pagina">
+  <header class="cabecera">
+    <h1>Bitacora</h1>
+    <p class="subtitulo">
+      Registro inmutable y con autor de transiciones de etapa, aprobaciones de entregables y
+      cambios relevantes de todos los proyectos. Las entradas se generan al ejecutar acciones
+      gobernadas; no se editan desde la interfaz.
+    </p>
+  </header>
+
+  <div class="filtros">
+    <label class="campo">
+      <span class="etiqueta">Proyecto</span>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filtro-select">
+        <mat-select
+          [value]="proyectoSel()"
+          (selectionChange)="seleccionarProyecto($any($event).value)"
+        >
+          <mat-option value="">Todos los proyectos</mat-option>
+          @for (proyecto of proyectos(); track proyecto.id) {
+            <mat-option [value]="proyecto.id">{{ proyecto.nombre }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </label>
+
+    <label class="campo">
+      <span class="etiqueta">Tipo de registro</span>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filtro-select">
+        <mat-select [value]="tipoSel()" (selectionChange)="seleccionarTipo($any($event).value)">
+          <mat-option value="">Todos los tipos</mat-option>
+          @for (tipo of tipos; track tipo) {
+            <mat-option [value]="tipo">{{ etiquetaTipo[tipo] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </label>
+  </div>
+
+  @if (!haySesion()) {
+    <ph-permission-banner
+      variante="info"
+      titulo="Sesion requerida"
+      detalle="Seleccione un usuario en el shell para consultar la bitacora del portafolio."
+    />
+  } @else if (filas().length === 0) {
+    <ph-permission-banner
+      variante="info"
+      titulo="Sin registros"
+      detalle="No hay entradas de bitacora para los filtros seleccionados."
+    />
+  } @else {
+    <ph-data-table
+      [filas]="filas()"
+      [cargando]="false"
+      textoVacio="Sin entradas de bitacora para los filtros seleccionados."
+    >
+      <ph-data-table-column name="fecha" header="Fecha" width="9rem" />
+      <ph-data-table-column name="proyecto" header="Proyecto">
+        <ng-template #cell let-fila>
+          <span class="celda-proyecto">{{ fila['proyecto'] }}</span>
+        </ng-template>
+      </ph-data-table-column>
+      <ph-data-table-column name="tipo" header="Tipo">
+        <ng-template #cell let-fila>
+          <span
+            class="pill"
+            [class.pill-transicion]="fila['tipoValor'] === 'transicion'"
+            [class.pill-aprobacion]="fila['tipoValor'] === 'aprobacion'"
+            [class.pill-cambio]="fila['tipoValor'] === 'cambio'"
+          >
+            {{ fila['tipo'] }}
+          </span>
+        </ng-template>
+      </ph-data-table-column>
+      <ph-data-table-column name="evento" header="Evento">
+        <ng-template #cell let-fila>
+          @if (fila['evento'] === '-') {
+            <span class="sin-evento">-</span>
+          } @else {
+            <span class="evento">{{ fila['evento'] }}</span>
+          }
+        </ng-template>
+      </ph-data-table-column>
+      <ph-data-table-column name="autor" header="Autor" />
+      <ph-data-table-column name="comentario" header="Comentario">
+        <ng-template #cell let-fila>
+          @if (fila['comentario'] === '-') {
+            <span class="sin-comentario">-</span>
+          } @else {
+            {{ fila['comentario'] }}
+          }
+        </ng-template>
+      </ph-data-table-column>
+    </ph-data-table>
+  }
+</section>
