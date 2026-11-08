@@ -25,7 +25,8 @@ describe('Bitacora (mfe-governance)', () => {
     const fechas = fixture.componentInstance.filas().map((f) => f.fecha);
     expect(fechas.length).toBeGreaterThan(0);
     // La fila mas reciente de la semilla es b5 (15 de oct de 2026, cambio de p6).
-    expect(fechas[0]).toBe('15 de oct de 2026');
+    // fechaHora formatea en es-CO 12 h: la semilla guarda 2026-10-15T09:00 -> '04:00 a. m.' (UTC-5).
+    expect(fechas[0]).toBe('15 de oct de 2026, 04:00 a. m.');
   });
 
   it('muestra la transicion de etapa legible y oculta evento en otros tipos', async () => {

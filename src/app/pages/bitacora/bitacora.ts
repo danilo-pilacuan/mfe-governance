@@ -88,7 +88,7 @@ export class Bitacora {
       .sort((a, b) => b.fecha.localeCompare(a.fecha))
       .map((b) => ({
         id: b.id,
-        fecha: this.intl.fecha(b.fecha),
+        fecha: this.intl.fechaHora(b.fecha),
         proyecto: this.store.proyectoPorId(b.proyectoId)?.nombre ?? b.proyectoId,
         tipo: this.etiquetaTipo[b.tipo],
         tipoValor: b.tipo,
