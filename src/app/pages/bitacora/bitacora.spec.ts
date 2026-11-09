@@ -1,7 +1,28 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { SESION_STORE, SesionStore } from '@projecthub/shared';
+import { SESION_STORE, SesionStore, Usuario } from '@projecthub/shared';
 import { Bitacora } from './bitacora';
+
+/** Usuario autenticado de los tests (equivale a un login exitoso). */
+function usuarioSesion(id: string, roles: Array<Usuario['roles'][number]>): Usuario {
+  const nombres: Record<string, string> = {
+    'u-admin': 'Diana Admin',
+    'u-pm': 'Paula ProjectManager',
+    'u-analista': 'Andres Analista',
+  };
+  return {
+    id,
+    nombre: nombres[id] ?? id,
+    correo: id + '@projecthub.local',
+    roles,
+    activo: true,
+  };
+}
+
+function fijarSesion(id: string, roles: Array<Usuario['roles'][number]>): void {
+  TestBed.inject<SesionStore>(SESION_STORE).fijarUsuario(usuarioSesion(id, roles));
+}
+
 
 describe('Bitacora (mfe-governance)', () => {
   function configurar(): ReturnType<typeof TestBed.createComponent<Bitacora>> {
@@ -15,7 +36,7 @@ describe('Bitacora (mfe-governance)', () => {
   it('lista la bitacora de la semilla ordenada de mas reciente a mas antigua', async () => {
     const fixture = configurar();
 
-    TestBed.inject<SesionStore>(SESION_STORE).seleccionar('u-admin');
+    fijarSesion('u-admin', ['Admin']);
     await fixture.whenStable();
     const texto = (fixture.nativeElement as HTMLElement).textContent ?? '';
 
@@ -32,7 +53,7 @@ describe('Bitacora (mfe-governance)', () => {
   it('muestra la transicion de etapa legible y oculta evento en otros tipos', async () => {
     const fixture = configurar();
 
-    TestBed.inject<SesionStore>(SESION_STORE).seleccionar('u-admin');
+    fijarSesion('u-admin', ['Admin']);
     await fixture.whenStable();
 
     const filas = fixture.componentInstance.filas();
@@ -45,7 +66,7 @@ describe('Bitacora (mfe-governance)', () => {
   it('filtra por proyecto', async () => {
     const fixture = configurar();
 
-    TestBed.inject<SesionStore>(SESION_STORE).seleccionar('u-admin');
+    fijarSesion('u-admin', ['Admin']);
     await fixture.whenStable();
 
     fixture.componentInstance.seleccionarProyecto('p1');
@@ -59,7 +80,7 @@ describe('Bitacora (mfe-governance)', () => {
   it('filtra por tipo de registro', async () => {
     const fixture = configurar();
 
-    TestBed.inject<SesionStore>(SESION_STORE).seleccionar('u-admin');
+    fijarSesion('u-admin', ['Admin']);
     await fixture.whenStable();
 
     fixture.componentInstance.seleccionarTipo('cambio');
@@ -73,7 +94,7 @@ describe('Bitacora (mfe-governance)', () => {
   it('muestra estado vacio cuando los filtros no arrojan resultados', async () => {
     const fixture = configurar();
 
-    TestBed.inject<SesionStore>(SESION_STORE).seleccionar('u-admin');
+    fijarSesion('u-admin', ['Admin']);
     await fixture.whenStable();
 
     // p5 no tiene registros de bitacora en la semilla.
@@ -97,7 +118,7 @@ describe('Bitacora (mfe-governance)', () => {
   it('resuelve el nombre del autor de la bitacora', async () => {
     const fixture = configurar();
 
-    TestBed.inject<SesionStore>(SESION_STORE).seleccionar('u-admin');
+    fijarSesion('u-admin', ['Admin']);
     await fixture.whenStable();
 
     const autores = fixture.componentInstance.filas().map((f) => f.autor);
@@ -108,7 +129,7 @@ describe('Bitacora (mfe-governance)', () => {
   it('exporta la bitacora como CSV descargable', async () => {
     const fixture = configurar();
 
-    TestBed.inject<SesionStore>(SESION_STORE).seleccionar('u-admin');
+    fijarSesion('u-admin', ['Admin']);
     await fixture.whenStable();
 
     const urls: string[] = [];
@@ -137,7 +158,7 @@ describe('Bitacora (mfe-governance)', () => {
   it('exporta un CSV sin filas cuando el filtro no arroja resultados', async () => {
     const fixture = configurar();
 
-    TestBed.inject<SesionStore>(SESION_STORE).seleccionar('u-admin');
+    fijarSesion('u-admin', ['Admin']);
     await fixture.whenStable();
 
     fixture.componentInstance.seleccionarProyecto('p5');
