@@ -1,0 +1,150 @@
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.cabecera {
+  h1 {
+    margin: 0 0 0.25rem;
+    font-size: 1.5rem;
+  }
+
+  .subtitulo {
+    margin: 0;
+    color: var(--ph-color-texto-suave, #5b6470);
+  }
+}
+
+.filtros {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  .campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .etiqueta {
+      font-size: 0.8rem;
+      color: var(--ph-color-texto-suave, #5b6470);
+    }
+  }
+
+  .filtro-select {
+    width: 18rem;
+  }
+}
+
+.formulario {
+  border: 1px solid var(--ph-color-borde, #d8dee6);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: var(--ph-color-fondo-suave, #f7f9fb);
+
+  h2 {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+
+  .error {
+    margin: 0;
+    color: var(--ph-color-peligro, #b3261e);
+    font-weight: 500;
+  }
+
+  .campos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 0.75rem;
+
+    .campo {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+
+      .etiqueta {
+        font-size: 0.8rem;
+        color: var(--ph-color-texto-suave, #5b6470);
+      }
+    }
+  }
+
+  .campo-nota {
+    max-width: 32rem;
+  }
+
+  .acciones-form {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+.grafo {
+  margin-top: 0.5rem;
+
+  h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .grafo-svg {
+    width: 100%;
+    max-width: 780px;
+    height: auto;
+    border: 1px solid var(--ph-color-borde, #d8dee6);
+    border-radius: 8px;
+    background: var(--ph-color-fondo-suave, #f7f9fb);
+
+    .arista {
+      fill: none;
+      stroke: var(--ph-color-acento, #4c6ef5);
+      stroke-width: 1.6;
+      opacity: 0.75;
+
+      &.arista-anula {
+        stroke: var(--ph-color-peligro, #b3261e);
+        stroke-dasharray: 5 4;
+      }
+    }
+
+    .etiqueta-arista {
+      font-size: 0.62rem;
+      fill: var(--ph-color-texto-suave, #5b6470);
+    }
+
+    .nodo {
+      circle {
+        fill: var(--ph-color-advertencia, #e8a13c);
+
+        &:hover {
+          stroke-width: 3;
+        }
+      }
+
+      &.nodo-aprobado circle {
+        fill: var(--ph-color-exito, #2f9e63);
+      }
+    }
+
+    .etiqueta-nodo {
+      font-size: 0.66rem;
+      fill: var(--ph-color-texto, #1f2733);
+    }
+  }
+
+  .leyenda {
+    margin: 0.5rem 0 0;
+    font-size: 0.8rem;
+    color: var(--ph-color-texto-suave, #5b6470);
+  }
+
+  .sin-grafo {
+    color: var(--ph-color-texto-suave, #5b6470);
+  }
+}

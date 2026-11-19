@@ -1,0 +1,163 @@
+<section class="pagina">
+  <ph-section-nav [links]="navLinks" ariaLabel="Secciones de gobernanza" />
+  <header class="cabecera">
+    <h1>Relaciones entre documentos</h1>
+    <p class="subtitulo">
+      Grafo de enlaces entre entregables del proyecto: acuerdos que derivan de otros, adendas que
+      los modifican, aclaraciones y anulaciones. Los enlaces alimentan la busqueda de trazabilidad
+      documental.
+    </p>
+  </header>
+
+  <div class="filtros">
+    <label class="campo">
+      <span class="etiqueta">Proyecto</span>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filtro-select">
+        <mat-select [value]="proyectoSel()" (selectionChange)="seleccionarProyecto($any($event).value)">
+          @for (proyecto of proyectos(); track proyecto.id) {
+            <mat-option [value]="proyecto.id">{{ proyecto.nombre }} ({{ proyecto.estado }})</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </label>
+
+    @if (puedeEditar()) {
+      <button type="button" mat-button class="boton" (click)="abrirForm()">Nueva relacion</button>
+    }
+  </div>
+
+  @if (!haySesion()) {
+    <ph-permission-banner
+      variante="info"
+      titulo="Sesion requerida"
+      detalle="Inicia sesion en el shell para consultar y administrar las relaciones del portafolio."
+    />
+  } @else {
+    @if (proyectoActual(); as proyecto) {
+      @if (proyecto.estado !== 'Activo') {
+        <ph-permission-banner
+          variante="info"
+          titulo="Proyecto en estado {{ proyecto.estado }}"
+          detalle="Los enlaces de documentos son de solo lectura: solo un proyecto Activo admite nuevas relaciones."
+        />
+      }
+    }
+
+    @if (formVisible()) {
+      <div class="formulario" role="form">
+        <h2>Nueva relacion</h2>
+        @if (error()) {
+          <p class="error" role="alert">{{ error() }}</p>
+        }
+        <div class="campos">
+          <label class="campo">
+            <span class="etiqueta">Documento origen</span>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-select [(value)]="formOrigen">
+                @for (doc of entregables(); track doc.id) {
+                  <mat-option [value]="doc.id">{{ doc.nombre }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </label>
+
+          <label class="campo">
+            <span class="etiqueta">Tipo de enlace</span>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-select [(value)]="formTipo">
+                @for (tipo of tipos; track tipo) {
+                  <mat-option [value]="tipo">{{ etiquetaTipo[tipo] }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </label>
+
+          <label class="campo">
+            <span class="etiqueta">Documento destino</span>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-select [(value)]="formDestino">
+                @for (doc of entregables(); track doc.id) {
+                  <mat-option [value]="doc.id">{{ doc.nombre }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </label>
+        </div>
+
+        <label class="campo campo-nota">
+          <span class="etiqueta">Nota (opcional)</span>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <input matInput [value]="formNota()" (input)="formNota.set($any($event.target).value)" placeholder="Por que existe este enlace" />
+          </mat-form-field>
+        </label>
+
+        <div class="acciones-form">
+          <button type="button" mat-button (click)="guardar()">Guardar</button>
+          <button type="button" mat-button (click)="cerrarForm()">Cancelar</button>
+        </div>
+      </div>
+    }
+
+    <ph-data-table
+      [filas]="filas()"
+      [cargando]="false"
+      textoVacio="Sin relaciones registradas para este proyecto. Usa 'Nueva relacion' para enlazar documentos."
+    >
+      <ph-data-table-column name="origen" header="Documento origen" />
+      <ph-data-table-column name="tipo" header="Tipo">
+        <ng-template #cell let-fila>
+          <ph-pill [tono]="fila['tipoValor'] === 'anula' ? 'danger' : fila['tipoValor'] === 'modifica' ? 'warn' : 'info'" [contenido]="fila['tipo']" />
+        </ng-template>
+      </ph-data-table-column>
+      <ph-data-table-column name="destino" header="Documento destino" />
+      <ph-data-table-column name="nota" header="Nota" />
+      @if (puedeEditar()) {
+        <ph-data-table-column name="acciones" header="Acciones">
+          <ng-template #cell let-fila>
+            <button type="button" mat-button (click)="retirar(fila['id'])">Retirar</button>
+          </ng-template>
+        </ph-data-table-column>
+      }
+    </ph-data-table>
+
+    <div class="grafo">
+      <h2>Grafo de relaciones</h2>
+      @if (nodosGraficos().length === 0) {
+        <p class="sin-grafo">Este proyecto no tiene entregables para graficar.</p>
+      } @else {
+        <svg
+          [attr.viewBox]="'0 0 720 420'"
+          class="grafo-svg"
+          role="img"
+          aria-label="Grafo de relaciones entre documentos del proyecto"
+        >
+          @for (arista of grafo().aristas; track arista.id) {
+            <path
+              class="arista"
+              [class.arista-anula]="arista.tipo === 'anula'"
+              [attr.d]="pathArista(arista.origenId, arista.destinoId)"
+            />
+            @if (etiquetaArista(arista.origenId, arista.destinoId); as punto) {
+              <text class="etiqueta-arista" [attr.x]="punto.x" [attr.y]="punto.y" text-anchor="middle">
+                {{ etiquetaTipo[arista.tipo] }}
+              </text>
+            }
+          }
+          @for (nodo of nodosGraficos(); track nodo.id) {
+            <g class="nodo" [class.nodo-aprobado]="nodo.aprobado">
+              <circle [attr.cx]="nodo.x" [attr.cy]="nodo.y" r="8" />
+              <title>{{ nodo.nombre }} ({{ nodo.grado }} conexiones)</title>
+            </g>
+            <text class="etiqueta-nodo" [attr.x]="nodo.x" [attr.y]="nodo.y - 14" text-anchor="middle">
+              {{ nodo.nombre }}
+            </text>
+          }
+        </svg>
+        <p class="leyenda">
+          El numero de conexiones de cada documento (grado) resalta los hub documentales; los enlaces
+          se dibujan con su tipo. Pasa el cursor por un nodo para ver su detalle.
+        </p>
+      }
+    </div>
+  }
+</section>

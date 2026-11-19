@@ -9,5 +9,6 @@ export interface EnlaceNavGobernanza {
 
 export const ENLACES_NAV_GOBERNANZA: EnlaceNavGobernanza[] = [
   { ruta: '/governance', etiqueta: 'Documentos' },
+  { ruta: '/governance/relaciones', etiqueta: 'Relaciones' },
   { ruta: '/governance/bitacora', etiqueta: 'Bitacora' },
 ];
