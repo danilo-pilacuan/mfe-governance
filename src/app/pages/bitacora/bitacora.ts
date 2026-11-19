@@ -25,6 +25,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { ENLACES_NAV_GOBERNANZA } from '../../nav-gobernanza';
 
 interface FilaBitacora {
   [clave: string]: unknown;
@@ -66,11 +67,8 @@ export class Bitacora {
   private readonly sesion: SesionStore = inject(SESION_STORE);
   private readonly intl = inject(IntlFormat);
 
-  /** Navegacion de secciones de gobernanza. */
-  protected readonly navLinks = [
-    { ruta: '/governance', etiqueta: 'Documentos' },
-    { ruta: '/governance/bitacora', etiqueta: 'Bitacora' },
-  ];
+  /** Navegacion de secciones de gobernanza (unica fuente compartida). */
+  protected readonly navLinks = ENLACES_NAV_GOBERNANZA;
 
   readonly tipos = TIPOS_BITACORA;
   readonly etiquetaTipo = ETIQUETA_TIPO_BITACORA;

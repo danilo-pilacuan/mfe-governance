@@ -27,6 +27,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { ENLACES_NAV_GOBERNANZA } from '../../nav-gobernanza';
 
 interface FilaEntregable {
   [clave: string]: unknown;
@@ -70,11 +71,8 @@ interface FilaEntregable {
   styleUrl: './documentos.scss',
 })
 export class Documentos {
-  /** Navegacion de secciones de gobernanza. */
-  protected readonly navLinks = [
-    { ruta: '/governance', etiqueta: 'Documentos' },
-    { ruta: '/governance/bitacora', etiqueta: 'Bitacora' },
-  ];
+  /** Navegacion de secciones de gobernanza (unica fuente compartida). */
+  protected readonly navLinks = ENLACES_NAV_GOBERNANZA;
   private readonly store = inject(ProjectStore);
   private readonly usuariosStore = inject(UsuarioStore);
   private readonly sesion: SesionStore = inject(SESION_STORE);
