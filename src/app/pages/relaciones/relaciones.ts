@@ -71,10 +71,7 @@ export class Relaciones {
   private readonly store = inject(ProjectStore);
   private readonly sesion: SesionStore = inject(SESION_STORE);
 
-  protected readonly navLinks = [
-    ...ENLACES_NAV_GOBERNANZA,
-    { ruta: '/governance/relaciones', etiqueta: 'Relaciones' },
-  ];
+  protected readonly navLinks = ENLACES_NAV_GOBERNANZA;
 
   readonly tipos = TIPOS_RELACION;
   readonly etiquetaTipo = ETIQUETA_TIPO_RELACION;
