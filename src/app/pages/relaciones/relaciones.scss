@@ -119,6 +119,8 @@
     }
 
     .nodo {
+      cursor: pointer;
+
       circle {
         fill: var(--ph-color-advertencia, #e8a13c);
 
@@ -130,12 +132,111 @@
       &.nodo-aprobado circle {
         fill: var(--ph-color-exito, #2f9e63);
       }
+
+      &.nodo-sel circle {
+        stroke: var(--ph-color-acento, #4c6ef5);
+        stroke-width: 4;
+      }
     }
 
-    .etiqueta-nodo {
-      font-size: 0.66rem;
-      fill: var(--ph-color-texto, #1f2733);
+    .etiqueta-nodo-sel {
+      font-weight: 700;
     }
+  }
+
+  .panel-vecinos {
+    margin-top: 0.75rem;
+    border: 1px solid var(--ph-color-borde, #d8dee6);
+    border-radius: 8px;
+    padding: 0.75rem;
+    background: var(--ph-color-fondo-suave, #f7f9fb);
+    max-width: 780px;
+
+    h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .lista-vecinos {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+
+      .direccion {
+        display: inline-block;
+        width: 1.4rem;
+        font-weight: 700;
+        color: var(--ph-color-acento, #4c6ef5);
+      }
+
+      .tipo {
+        color: var(--ph-color-texto-suave, #5b6470);
+        margin-left: 0.5rem;
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  .trazabilidad {
+    margin-top: 1rem;
+    max-width: 780px;
+
+    h3 {
+      margin: 0 0 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .ayuda {
+      margin: 0 0 0.5rem;
+      font-size: 0.8rem;
+      color: var(--ph-color-texto-suave, #5b6470);
+    }
+
+    .campos-trazabilidad {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+
+      mat-form-field {
+        width: 16rem;
+      }
+    }
+
+    .resultado-camino {
+      margin: 0.5rem 0 0;
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      background: var(--ph-color-fondo-suave, #f7f9fb);
+      border: 1px solid var(--ph-color-exito, #2f9e63);
+
+      .paso {
+        font-weight: 600;
+      }
+
+      .flecha {
+        color: var(--ph-color-texto-suave, #5b6470);
+      }
+    }
+
+    .sin-camino {
+      margin: 0.5rem 0 0;
+      color: var(--ph-color-texto-suave, #5b6470);
+      font-style: italic;
+    }
+  }
+
+  .etiqueta-nodo {
+    font-size: 0.66rem;
+    fill: var(--ph-color-texto, #1f2733);
+  }
+
+  .arista-activa {
+    stroke-width: 3;
+    opacity: 1;
   }
 
   .leyenda {

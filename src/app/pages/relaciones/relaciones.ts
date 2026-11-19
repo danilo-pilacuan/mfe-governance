@@ -15,6 +15,8 @@ import {
   TIPOS_RELACION,
   TipoRelacion,
   validarRelacion,
+  vecinosDe,
+  caminoEntre,
 } from '@projecthub/shared';
 import { DataTable, DataTableColumn, PermissionBanner, Pill, SectionNav } from '@projecthub/ui';
 import { ENLACES_NAV_GOBERNANZA } from '../../nav-gobernanza';
@@ -86,6 +88,12 @@ export class Relaciones {
   readonly formNota = signal('');
   readonly error = signal('');
 
+  /** Trazabilidad: documento seleccionado en el grafo y camino consultado. */
+  readonly nodoSel = signal<string>('');
+  readonly trazabilidadOrigen = signal('');
+  readonly trazabilidadDestino = signal('');
+  readonly camino = signal<readonly string[] | null>(null);
+
   readonly haySesion = computed(() => this.sesion.usuarioActivo() !== null);
 
   readonly proyectoActual = computed(() => this.proyectos().find((p) => p.id === this.proyectoSel()) ?? null);
@@ -148,6 +156,30 @@ export class Relaciones {
   });
 
   readonly puedeEditar = computed(() => this.haySesion() && this.proyectoActual()?.estado === 'Activo');
+
+  /** Vecinos del documento seleccionado (16.1, panel de trazabilidad). */
+  readonly vecinosSel = computed(() => {
+    const id = this.nodoSel();
+    if (id === '') return [];
+    return vecinosDe(id, this.entregables(), this.relaciones());
+  });
+
+  readonly nombreNodoSel = computed(() => (this.nodoSel() === '' ? '' : this.nombreDe(this.nodoSel())));
+
+  seleccionarNodo(id: string): void {
+    this.nodoSel.set(this.nodoSel() === id ? '' : id);
+  }
+
+  consultarCamino(): void {
+    const origen = this.trazabilidadOrigen();
+    const destino = this.trazabilidadDestino();
+    if (origen === '' || destino === '' || origen === destino) {
+      this.camino.set(null);
+      return;
+    }
+    // Busqueda dirigida en el catalogo local (16.1); misma regla BFS del backend.
+    this.camino.set(caminoEntre(origen, destino, this.relaciones()));
+  }
 
   seleccionarProyecto(id: string): void {
     this.proyectoSel.set(id);

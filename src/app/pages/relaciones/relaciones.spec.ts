@@ -122,4 +122,58 @@ describe('Relaciones (mfe-governance, 16.1)', () => {
       expect(n.y).toBeLessThanOrEqual(420);
     }
   });
+
+  it('panel de conexiones: seleccionar un nodo lista sus vecinos con direccion', async () => {
+    const fixture = configurar();
+    TestBed.inject<SesionStore>(SESION_STORE).fijarUsuario(usuarioSesion('u-admin', ['Admin']));
+    await fixture.whenStable();
+    const pagina = fixture.componentInstance;
+    pagina.seleccionarProyecto('p1');
+    pagina.abrirForm();
+    pagina.formOrigen.set('ent-7');
+    pagina.formDestino.set('ent-6');
+    pagina.formTipo.set('modifica');
+    pagina.guardar();
+    pagina.seleccionarNodo('ent-6');
+    await fixture.whenStable();
+    expect(pagina.vecinosSel().length).toBe(1);
+    expect(pagina.vecinosSel()[0]).toMatchObject({ id: 'ent-7', direccion: 'entrante', tipo: 'modifica' });
+    // Deseleccionar cierra el panel.
+    pagina.seleccionarNodo('ent-6');
+    expect(pagina.nodoSel()).toBe('');
+    expect(pagina.vecinosSel().length).toBe(0);
+  });
+
+  it('trazabilidad: busca el camino dirigido entre dos documentos', async () => {
+    const fixture = configurar();
+    TestBed.inject<SesionStore>(SESION_STORE).fijarUsuario(usuarioSesion('u-admin', ['Admin']));
+    await fixture.whenStable();
+    const pagina = fixture.componentInstance;
+    pagina.seleccionarProyecto('p1');
+    // ent-7 -> ent-6 (modifica); luego ent-6 -> ent-3 no existe: sin camino.
+    pagina.abrirForm();
+    pagina.formOrigen.set('ent-7');
+    pagina.formDestino.set('ent-6');
+    pagina.formTipo.set('modifica');
+    pagina.guardar();
+    pagina.abrirForm();
+    pagina.formOrigen.set('ent-6');
+    pagina.formDestino.set('ent-1');
+    pagina.formTipo.set('derivaDe');
+    pagina.guardar();
+    // Camino ent-7 -> ent-1 pasa por ent-6.
+    pagina.trazabilidadOrigen.set('ent-7');
+    pagina.trazabilidadDestino.set('ent-1');
+    pagina.consultarCamino();
+    expect(pagina.camino()).toEqual(['ent-7', 'ent-6', 'ent-1']);
+    // En direccion inversa no hay camino (grafo dirigido).
+    pagina.trazabilidadOrigen.set('ent-1');
+    pagina.trazabilidadDestino.set('ent-7');
+    pagina.consultarCamino();
+    expect(pagina.camino()).toBeNull();
+    // Sin seleccion completa no busca.
+    pagina.trazabilidadOrigen.set('');
+    pagina.consultarCamino();
+    expect(pagina.camino()).toBeNull();
+  });
 });

@@ -135,6 +135,7 @@
             <path
               class="arista"
               [class.arista-anula]="arista.tipo === 'anula'"
+              [class.arista-activa]="nodoSel() === arista.origenId || nodoSel() === arista.destinoId"
               [attr.d]="pathArista(arista.origenId, arista.destinoId)"
             />
             @if (etiquetaArista(arista.origenId, arista.destinoId); as punto) {
@@ -144,19 +145,82 @@
             }
           }
           @for (nodo of nodosGraficos(); track nodo.id) {
-            <g class="nodo" [class.nodo-aprobado]="nodo.aprobado">
+            <g
+              class="nodo"
+              [class.nodo-aprobado]="nodo.aprobado"
+              [class.nodo-sel]="nodoSel() === nodo.id"
+              (click)="seleccionarNodo(nodo.id)"
+            >
               <circle [attr.cx]="nodo.x" [attr.cy]="nodo.y" r="8" />
               <title>{{ nodo.nombre }} ({{ nodo.grado }} conexiones)</title>
             </g>
-            <text class="etiqueta-nodo" [attr.x]="nodo.x" [attr.y]="nodo.y - 14" text-anchor="middle">
+            <text
+              class="etiqueta-nodo"
+              [class.etiqueta-nodo-sel]="nodoSel() === nodo.id"
+              [attr.x]="nodo.x"
+              [attr.y]="nodo.y - 14"
+              text-anchor="middle"
+            >
               {{ nodo.nombre }}
             </text>
           }
         </svg>
         <p class="leyenda">
-          El numero de conexiones de cada documento (grado) resalta los hub documentales; los enlaces
-          se dibujan con su tipo. Pasa el cursor por un nodo para ver su detalle.
+          Clic en un nodo para ver sus conexiones; el numero entre parentesis es su grado
+          (conexiones totales). Los enlaces se dibujan con su tipo.
         </p>
+
+        @if (nodoSel() !== '') {
+          <div class="panel-vecinos" role="region" aria-label="Conexiones del documento seleccionado">
+            <h3>Conexiones de "{{ nombreNodoSel() }}"</h3>
+            @if (vecinosSel().length === 0) {
+              <p class="sin-grafo">Este documento no tiene relaciones todavia.</p>
+            } @else {
+              <ul class="lista-vecinos">
+                @for (vecino of vecinosSel(); track vecino.relacionId) {
+                  <li>
+                    <span class="direccion">{{ vecino.direccion === 'saliente' ? '→' : '←' }}</span>
+                    <strong>{{ vecino.nombre }}</strong>
+                    <span class="tipo">{{ etiquetaTipo[vecino.tipo] }}</span>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        }
+
+        <div class="trazabilidad">
+          <h3>Trazabilidad entre documentos</h3>
+          <p class="ayuda">Camino mas corto siguiendo los enlaces dirigidos (p. ej. de una adenda al acuerdo del que deriva).</p>
+          <div class="campos-trazabilidad">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Desde</mat-label>
+              <mat-select [(value)]="trazabilidadOrigen">
+                @for (doc of entregables(); track doc.id) {
+                  <mat-option [value]="doc.id">{{ doc.nombre }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Hasta</mat-label>
+              <mat-select [(value)]="trazabilidadDestino">
+                @for (doc of entregables(); track doc.id) {
+                  <mat-option [value]="doc.id">{{ doc.nombre }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <button type="button" mat-button (click)="consultarCamino()">Buscar camino</button>
+          </div>
+          @if (camino(); as ruta) {
+            <p class="resultado-camino" data-testid="camino-encontrado">
+              @for (paso of ruta; track $index) {
+                <span class="paso">{{ nombreDe(paso) }}</span>@if (!$last) {<span class="flecha"> → </span>}
+              }
+            </p>
+          } @else if (trazabilidadOrigen() !== '' && trazabilidadDestino() !== '') {
+            <p class="sin-camino">No hay camino dirigido entre esos documentos.</p>
+          }
+        </div>
       }
     </div>
   }
